@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Shivam Bhilare – AI Engineer & Developer</title>
+    <meta
+      name="description"
+      content="Portfolio of Shivam Bhilare. Computer Science student exploring full-stack fundamentals, modern AI applications, and hands-on software development."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Sky backgrounds stack: crossfade driven by scroll -->
+    <div class="fx" id="skies" aria-hidden="true">
+      <img src="assets/skies/morning.webp" alt="Morning Sky" decoding="async" />
+      <img src="assets/skies/mid-day.webp" alt="Midday Sky" decoding="async" />
+      <img
+        src="assets/skies/late-afternoon.webp"
+        alt="Afternoon Sky"
+        decoding="async"
+      />
+      <img src="assets/skies/sunset.webp" alt="Sunset Sky" decoding="async" />
+      <img src="assets/skies/night.webp" alt="Night Sky" decoding="async" />
+    </div>
+
+    <!-- Ambient gradient scrim -->
+    <div class="fx" id="scrim"></div>
+
+    <!-- Sky canvas: soaring bird flocks (day) and shooting stars (night) -->
+    <canvas class="fx" id="stars" aria-hidden="true"></canvas>
+
+    <!-- Layer 1: Illustrated Terrain - Back Hills & Trees (behind avatar) -->
+    <canvas class="fx" id="land-back" aria-hidden="true"></canvas>
+
+    <!-- Layer 2: Character Avatar (shifted right, gazing up) -->
+    <canvas
+      id="boy"
+      aria-label="Illustration of Shivam looking up at the sky"
+    ></canvas>
+
+    <!-- Layer 3: Illustrated Terrain - Front Grass Ridge (in front of avatar) -->
+    <canvas class="fx" id="land-front" aria-hidden="true"></canvas>
+
+    <!-- Navigation Bar -->
+    <nav>
+      <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+      <a href="#top" class="logo">
+        <span class="logo-dot"></span>
+        Shivam Bhilare
+      </a>
+      <div class="nav-links" id="nav-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#leadership">Leadership</a>
+        <a href="#lens">Moments</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <a
+          href="https://github.com/ShivamBhilare"
+          target="_blank"
+          rel="noopener"
+          class="nav-ext"
+          aria-label="GitHub Profile"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"
+            />
+          </svg>
+        </a>
+        <a
+          href="https://linkedin.com/in/shivam-bhilare-16817a244"
+          target="_blank"
+          rel="noopener"
+          class="nav-ext"
+          aria-label="LinkedIn Profile"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.49 1.49 0 0 0 1.49-1.49 1.5 1.5 0 0 0-1.49-1.5 1.5 1.5 0 0 0-1.5 1.5c0 .82.68 1.49 1.5 1.49m1.4 9.74v-8.37H5.06v8.37h2.8z"
+            />
+          </svg>
+        </a>
+        <a href="assets/Shivam Laxman Bhilare - Resume.pdf" download class="btn-resume"
+          >Resume ↓</a
+        >
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="nav-bar"></span>
+          <span class="nav-bar"></span>
+          <span class="nav-bar"></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Page Main Content -->
+    <main>
+      <!-- 1. Landing Hero: Centered Big Text -->
+      <div class="hero" id="top">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Aspiring AI Engineer
+        </div>
+        <h1 class="hero-name">Shivam Bhilare</h1>
+        <p class="hero-sub">
+          Learning by building. Exploring emerging tech and turning concepts
+          into real-world projects.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#projects" class="btn-primary">Explore Projects →</a>
+          <a href="#about" class="btn-secondary">About Me</a>
+          <a
+            href="assets/Shivam Laxman Bhilare - Resume.pdf"
+            download
+            class="btn-secondary"
+            >Download Resume ↓</a
+          >
+        </div>
+
+        <a href="#about" class="scroll-hint" aria-label="Scroll to about me">
+          <span class="scroll-mouse"><span class="scroll-wheel"></span></span>
+          <span class="scroll-text">Scroll to explore</span>
+        </a>
+      </div>
+
+      <!-- 2. About Me Section -->
+      <div class="col">
+        <section class="panel" id="about">
+          <div class="section-head">
+            <span class="eyebrow">01 · Background</span>
+            <h2>About Me</h2>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-media">
+              <div class="profile-card">
+                <img
+                  src="assets/constellation/Profile.jpeg"
+                  alt="Shivam Bhilare"
+                  class="profile-avatar"
+                />
+              </div>
+              <div class="profile-status">
+                <span class="badge-dot"></span> Open to Roles
+              </div>
+            </div>
+
+            <div class="about-details">
+              <h3 class="about-name">Shivam Bhilare</h3>
+              <p class="about-bio">
+                Software developer and Computer Science student passionate about
+                exploring every layer of the development stack. My philosophy is
+                simple: build to understand. Rather than sticking to one niche,
+                I explore everything from backend logic and data flow to dynamic
+                frontends and emerging AI tools. By pairing rapid learning with
+                modern AI-assisted workflows, I can dive into unfamiliar
+                libraries quickly, map out how systems talk to each other, and
+                turn ideas into functional, real-world code.
+              </p>
+
+              <div class="info-table">
+                <div class="info-row">
+                  <span class="info-label">🎓 College</span>
+                  <span class="info-value"
+                    >SIES College of Arts, Science & Commerce</span
+                  >
+                </div>
+                <div class="info-row">
+                  <span class="info-label">📜 Program</span>
+                  <span class="info-value"
+                    >B.Sc. in Computer Science <br />(Graduating March
+                    2027)</span
+                  >
+                </div>
+                <div class="info-row">
+                  <span class="info-label">🎯 Concentration</span>
+                  <span class="info-value"
+                    >AI Engineering Fundamentals & End-to-End Application
+                    Development</span
+                  >
+                </div>
+                <div class="info-row">
+                  <span class="info-label">💡 Interests</span>
+                  <span class="info-value"
+                    >Exploring Software Architecture, Building with Modern Tech,
+                    Photography & Videography</span
+                  >
+                </div>
+                <div class="info-row">
+                  <span class="info-label">📍 Location</span>
+                  <span class="info-value">Mumbai, Maharashtra, India</span>
+                </div>
+              </div>
+
+              <div class="about-links">
+                <a
+                  href="https://linkedin.com/in/shivam-bhilare-16817a244"
+                  target="_blank"
+                  rel="noopener"
+                  class="link-btn"
+                >
+                  LinkedIn ↗
+                </a>
+                <a
+                  href="https://github.com/ShivamBhilare"
+                  target="_blank"
+                  rel="noopener"
+                  class="link-btn"
+                >
+                  GitHub ↗
+                </a>
+                <a href="mailto:bhilareshivam0741@gmail.com" class="link-btn">
+                  Email Me ↗
+                </a>
+                <a
+                  href="assets/Shivam Laxman Bhilare - Resume.pdf"
+                  download
+                  class="link-btn btn-highlight"
+                >
+                  Resume PDF ↓
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 3. Projects Section -->
+      <div class="col">
+        <section class="panel" id="projects">
+          <div class="section-head">
+            <span class="eyebrow">02 · Featured Engineering</span>
+            <h2>Projects</h2>
+          </div>
+
+          <div class="projects-container">
+            <!-- Project 1: SmallBook -->
+            <div class="project-card">
+              <div class="project-head">
+                <div class="project-title-wrap">
+                  <span class="project-num">01</span>
+                  <h3>SmallBook</h3>
+                </div>
+                <span class="project-badge">Open Source</span>
+              </div>
+              <p class="project-role">
+                AI Research & Study Assistant · NotebookLM Alternative
+              </p>
+              <p class="project-desc">
+                A web project inspired by NotebookLM, built to explore how
+                Retrieval-Augmented Generation (RAG) works on textbooks and
+                study notes. The goal was to build an interface that allows
+                uploading documents, retrieving relevant sections via semantic
+                search, and generating structured study aids like quizzes and
+                flashcards grounded directly in the text.
+              </p>
+
+              <div class="project-learnings">
+                <div class="learnings-title">
+                  ⚡ Key Learnings & Architecture
+                </div>
+                <ul>
+                  <li>
+                    Explored text splitting strategies with overlap to make sure
+                    concepts, formulas, and definitions retain enough
+                    surrounding context for retrieval.
+                  </li>
+                  <li>
+                    Integrated Qdrant to understand how semantic embeddings work
+                    in practice, retrieving only the relevant chunks of text
+                    instead of passing entire files to the LLM
+                  </li>
+                  <li>
+                    Connected LiteLLM to experiment with multiple providers
+                    (Claude, Gemini, and local models via Ollama) and understand
+                    API handling, fallbacks, and rate limits.
+                  </li>
+                </ul>
+              </div>
+
+              <ul class="tags">
+                <li>Python</li>
+                <li>FastAPI</li>
+                <li>Qdrant</li>
+                <li>LiteLLM</li>
+                <li>LangChain</li>
+                <li>RAG Concept</li>
+                <li>Supabase</li>
+                <li>Docker</li>
+              </ul>
+
+              <div class="project-footer">
+                <a
+                  class="go"
+                  href="https://github.com/ShivamBhilare/SmallBook"
+                  target="_blank"
+                  rel="noopener"
+                  >View on GitHub →</a
+                >
+              </div>
+            </div>
+
+            <!-- Project 2: FinTune -->
+            <div class="project-card">
+              <div class="project-head">
+                <div class="project-title-wrap">
+                  <span class="project-num">02</span>
+                  <h3>FinTune</h3>
+                </div>
+                <span class="project-badge">ZeroDay Hackathon</span>
+              </div>
+              <p class="project-role">Personal Finance Optimizer</p>
+              <p class="project-desc">
+                Built during my first 24-hour hackathon (ZeroDay Hackathon)
+                working in a team. FinTune was an experiment in reducing the
+                friction of expense tracking by extracting costs from voice
+                memos and receipt photos, combined with a gamified challenge
+                system to encourage better saving habits.
+              </p>
+
+              <div class="project-learnings">
+                <div class="learnings-title">
+                  ⚡ Key Learnings & Architecture
+                </div>
+                <ul>
+                  <li>
+                    Integrated the Gemini API to parse messy receipt images and
+                    voice inputs, focusing on structured output formatting so
+                    values reliably mapped into database models.
+                  </li>
+                  <li>
+                    Designed a rule-based budget generator and a gamified
+                    "side-quest" streak system that rewarded users with XP and
+                    scoreboard ranks when staying below set limits.
+                  </li>
+                  <li>
+                    Coordinated application flow and backend integration across
+                    a 4-person team, learning hands-on how to collaborate on Git
+                    branches and stitch different features together in 24 hours.
+                  </li>
+                </ul>
+              </div>
+
+              <ul class="tags">
+                <li>Python</li>
+                <li>Django</li>
+                <li>Gemini API</li>
+                <li>Supabase</li>
+                <li>Chart.js</li>
+                <li>GitHub Collaboration</li>
+              </ul>
+
+              <div class="project-footer">
+                <a
+                  class="go"
+                  href="https://github.com/ShivamBhilare/FinTune"
+                  target="_blank"
+                  rel="noopener"
+                  >View on GitHub →</a
+                >
+              </div>
+            </div>
+
+            <!-- Project 3: ExGrowth -->
+            <div class="project-card">
+              <div class="project-head">
+                <div class="project-title-wrap">
+                  <span class="project-num">03</span>
+                  <h3>ExGrowth Analytics</h3>
+                </div>
+                <span class="project-badge">Data Intelligence</span>
+              </div>
+              <p class="project-role">
+                Automated Business Analytics & KPI Dashboard
+              </p>
+              <p class="project-desc">
+                Built to learn hands-on data manipulation and transformation
+                using Python, Pandas, and NumPy. ExGrowth takes raw,
+                inconsistent sales spreadsheets (CSV/Excel) and converts them
+                into interactive visual dashboards to track performance metrics
+                without manual calculations.
+              </p>
+
+              <div class="project-learnings">
+                <div class="learnings-title">
+                  ⚡ Key Learnings & Architecture
+                </div>
+                <ul>
+                  <li>
+                    Explored RapidFuzz to resolve inconsistent column naming and
+                    messy customer labels, automatically standardizing fields
+                    for database storage.
+                  </li>
+                  <li>
+                    Practiced using Pandas and NumPy for aggregations—grouping
+                    records by region, product category, and timeframe to
+                    compute metrics efficiently.
+                  </li>
+                  <li>
+                    Structured an interactive dashboard using Chart.js to render
+                    key sales KPIs: Total Revenue, Profit Margins, Average Order
+                    Value (AOV), and monthly sales trend charts.
+                  </li>
+                </ul>
+              </div>
+
+              <ul class="tags">
+                <li>Python</li>
+                <li>Django</li>
+                <li>Pandas</li>
+                <li>Numpy</li>
+                <li>RapidFuzz</li>
+                <li>Chart.js</li>
+              </ul>
+
+              <div class="project-footer">
+                <a
+                  class="go"
+                  href="https://github.com/ShivamBhilare/exgrowth-analytics"
+                  target="_blank"
+                  rel="noopener"
+                  >View on GitHub →</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Toolkit / Tech Stack -->
+          <div class="toolkit-card">
+            <h4>Core Engineering Toolkit</h4>
+            <ul class="tags">
+              <li>Python</li>
+              <li>FastAPI</li>
+              <li>Django</li>
+              <li>Machine Learning &amp; NLP Concepts</li>
+              <li>Pandas &amp; NumPy</li>
+              <li>Matplotlib &amp; Chart.js</li>
+              <li>RAG &amp; Vector Search (Qdrant)</li>
+              <li>PostgreSQL (Supabase)</li>
+              <li>Git &amp; GitHub</li>
+              <li>REST APIs</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- 4. Leadership & Achievements Section -->
+      <div class="col">
+        <section class="panel" id="leadership">
+          <div class="section-head">
+            <span class="eyebrow">03 · Impact & Milestones</span>
+            <h2>Leadership & Milestones</h2>
+          </div>
+
+          <!-- Milestone 1: Ziegers Tech Fest -->
+          <div class="timeline-card">
+            <h3>Vice Chairperson, Ziegers Tech Fest</h3>
+            <p class="m">SIES College of Arts, Science & Commerce · 2026</p>
+            <p>
+              Coordinated a core team of 27 members and directed 170 student
+              volunteers for the Computer Science department’s annual technology
+              festival. Oversaw operational blueprints, event scheduling,
+              logistics, and inter-team communications across the two-day fest.
+            </p>
+          </div>
+
+          <!-- Milestone 2: ZeroDay Hackathon -->
+          <div class="timeline-card">
+            <h3>Team Leader, ZeroDay Hackathon</h3>
+            <p class="m">Team Nexus · Dec 2025</p>
+            <p>
+              Led a 4-person team during an intensive 24-hour hackathon sprint.
+              Directed project scope, defined API contracts, and coordinated Git
+              branch integration to deliver a functional multimodal web
+              prototype under tight time constraints.
+            </p>
+          </div>
+
+          <!-- Milestone 3: Certifications & Continuous Learning -->
+          <div class="timeline-card">
+            <h3>Certifications & Technical Learning</h3>
+            <p class="m">Foundational Knowledge & Skill Building</p>
+            <div style="margin-top: 10px">
+              <strong style="color: var(--fg); font-size: 0.9rem"
+                >Verified Certifications:</strong
+              >
+              <ul
+                class="cert-list"
+                style="margin: 6px 0 12px 18px; padding: 0; color: var(--mute)"
+              >
+                <li><strong>NPTEL:</strong> Computer Networks</li>
+                <li>
+                  <strong>NPTEL:</strong> The Joy of Computing Using Python
+                </li>
+                <li><strong>Anthropic:</strong> Claude 101 </li>
+              </ul>
+
+              <strong style="color: var(--fg); font-size: 0.9rem">Relevant Coursework:</strong>
+              <ul class="cert-list" style="margin: 6px 0 0 18px; padding: 0; color: var(--mute)">
+                <li>
+                  <strong>Harvard CS50:</strong> Introduction to Artificial
+                  Intelligence with Python (Coursework)
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- 5. Moments Constellation Section -->
+      <section class="lens" id="lens">
+        <div class="col">
+          <div class="section-head">
+            <span class="eyebrow">04 · Behind The Code</span>
+            <h2>Moments Constellation</h2>
+          </div>
+          <p style="color: var(--mute); margin: 0 0 20px">
+            A collection of personal snapshots, hackathon sprints, college memories, and perspectives captured through my camera lens. Hover or click any star to reveal a moment.
+          </p>
+        </div>
+
+        <div class="field" id="field">
+          <canvas id="cons" aria-hidden="true"></canvas>
+        </div>
+
+        <button class="redraw" id="redraw" type="button">
+          Redraw constellation
+        </button>
+      </section>
+
+      <!-- 6. Contact & Footer Section -->
+      <div class="col contact-section" id="contact">
+        <section class="panel contact-card">
+          <span class="eyebrow">05 · Get In Touch</span>
+          <h2>Let's build something extraordinary.</h2>
+          <p>
+            I’m always open to talking about software development, AI concepts, creative projects, or discussing internship and junior engineering opportunities.
+          </p>
+
+          <a class="contact-email" href="mailto:bhilareshivam0741@gmail.com"
+            >bhilareshivam0741@gmail.com</a
+          >
+
+          <div class="contact-meta">
+            <span>📍 Mumbai, Maharashtra, India</span>
+            <a
+              href="https://github.com/ShivamBhilare"
+              target="_blank"
+              rel="noopener"
+              >GitHub ↗</a
+            >
+            <a
+              href="https://linkedin.com/in/shivam-bhilare-16817a244"
+              target="_blank"
+              rel="noopener"
+              >LinkedIn ↗</a
+            >
+            <a
+              href="assets/Shivam Laxman Bhilare - Resume.pdf"
+              download
+              style="color: var(--ac); font-weight: 600"
+              >Download Resume ↓</a
+            >
+          </div>
+
+          <div class="footer-copy">
+            Designed & Built with code and personal moments · Shivam Bhilare ©
+            2026
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script src="main.js" defer></script>
+  </body>
+</html>
