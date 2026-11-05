@@ -79,8 +79,11 @@ const TN = [
 
 const bc = $('boy'), bx = bc.getContext('2d');
 
+let lastBoyF = -1, lastBoyI = -1, lastBoyE = -1;
+
 function drawBoy(f, i, e) {
-  const r = Math.min(devicePixelRatio || 1, 2);
+  const isMobile = innerWidth <= 768;
+  const r = isMobile ? 1 : Math.min(devicePixelRatio || 1, 1.5);
   const cw = Math.round(bc.clientWidth * r);
   const ch = Math.round(bc.clientHeight * r);
   if (!cw || !ch) return;
@@ -88,7 +91,16 @@ function drawBoy(f, i, e) {
   if (bc.width !== cw || bc.height !== ch) {
     bc.width = cw;
     bc.height = ch;
+    lastBoyF = -1;
   }
+
+  // Skip redundant heavy re-rendering when scroll hasn't meaningfully changed
+  if (Math.abs(f - lastBoyF) < 0.001 && i === lastBoyI && Math.abs(e - lastBoyE) < 0.001) {
+    return;
+  }
+  lastBoyF = f;
+  lastBoyI = i;
+  lastBoyE = e;
 
   const A = BF[i], B = BF[i + 1];
   if (!A || !B || !A.complete || !B.complete) return;
@@ -139,8 +151,11 @@ const TL_front = [
   [ 12,  18,  44, 0.68]
 ];
 
+let lastF = -1, lastI = -1, lastE = -1;
+
 function drawLand(f, i, e) {
-  const r = Math.min(devicePixelRatio || 1, 2);
+  const isMobile = innerWidth <= 768;
+  const r = isMobile ? 1 : Math.min(devicePixelRatio || 1, 1.5);
   const cw = Math.round(landBack.clientWidth * r);
   const ch = Math.round(landBack.clientHeight * r);
   if (!cw || !ch || !imgLandBack.complete || !imgLandFront.complete) return;
@@ -148,7 +163,12 @@ function drawLand(f, i, e) {
   if (landBack.width !== cw || landBack.height !== ch) {
     landBack.width = landFront.width = cw;
     landBack.height = landFront.height = ch;
+    lastF = -1;
   }
+
+  // Avoid unnecessary heavy re-renders if position hasn't meaningfully changed
+  if (Math.abs(f - lastF) < 0.001) return;
+  lastF = f; lastI = i; lastE = e;
 
   // Terrain hills proportion: hills occupy bottom ~62% of asset height (1536 / 955)
   const dh = Math.round(ch * (1536 / 955));
@@ -311,7 +331,13 @@ function drawBirdSilhouette(ctx, bx, by, size, flap, angle) {
   ctx.restore();
 }
 
+let lastSkyFxT = 0;
+
 function renderSkyFx(t, f) {
+  // On mobile screens, throttle sky particles to ~30 FPS to leave GPU overhead for scrolling
+  if (innerWidth <= 768 && t - lastSkyFxT < 33) return;
+  lastSkyFxT = t;
+
   x.clearRect(0, 0, w, h);
   if (reduce) return;
 
@@ -401,7 +427,12 @@ function renderSkyFx(t, f) {
 /* --------------------------------------------------------------------------
    5. Scroll Animation Loop & Render Pipeline
    -------------------------------------------------------------------------- */
+let lastAppliedP = -1;
+
 function paint(p) {
+  if (Math.abs(p - lastAppliedP) < 0.0008) return;
+  lastAppliedP = p;
+
   const f = p * 4, i = Math.min(3, Math.floor(f)), e = ez(f - i);
 
   // Update theme variables
@@ -410,10 +441,13 @@ function paint(p) {
     R.style.setProperty(v, 'rgb(' + u.map((n, j) => Math.round(n + (b[j] - n) * e)) + ')');
   });
 
-  // Crossfade skies
+  // Crossfade skies (omit continuous matrix transforms on mobile to save GPU cycles)
+  const isMobile = innerWidth <= 768;
   sk.forEach((im, k) => {
     im.style.opacity = k ? ez(cl(f - k + 1)) : 1;
-    im.style.transform = 'translate3d(0,' + (reduce ? 0 : -p * 2.5) + '%,0) scale(' + (1 + (reduce ? 0 : p * 0.04)) + ')';
+    if (!isMobile && !reduce) {
+      im.style.transform = 'translate3d(0,' + (-p * 2.5) + '%,0) scale(' + (1 + p * 0.04) + ')';
+    }
   });
 
   sa = cl((p - 0.78) / 0.18);
@@ -587,9 +621,16 @@ new IntersectionObserver(e => {
   vis = e[0].isIntersecting;
 }).observe(field);
 
+let lastFrameT = 0;
+
 function frame(t) {
   requestAnimationFrame(frame);
   if (!vis) return;
+
+  // On mobile screens, throttle constellation animation to ~30 FPS
+  if (innerWidth <= 768 && t - lastFrameT < 33) return;
+  lastFrameT = t;
+
   cx.clearRect(0, 0, fw, fh);
   const pw = Math.min(220, innerWidth * 0.68);
 
